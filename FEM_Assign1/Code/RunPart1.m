@@ -1,49 +1,121 @@
-main()
+Problem11();
+Problem12();
+Problem13();
 
-% Main function
-function main()
+
+function Problem11()
+    h = [1/8, 1/16];
+
+    for i=1:length(h)
+        [U, M, p, t] = RunSimulationGFEM(h(i), @InitialBoobyFunction);
+        figure;
+        pdesurf(p,t,U(:,size(U, 2)))
+        print(['../Plots/problem_1_1_result_', num2str(i)],'-djpeg')
+
+        animFileName = ['../Plots/animation_smooth_h', num2str(i)];
+        MakeAnimation(p, t, U, animFileName, 1/20);
+    end
+end
+
+
+function Problem12()
     h = [1/4, 1/8, 1/16, 1/32];
 
-    L2E = zeros(length(h), 1);
-    
+    % Gather L2 errors for different mesh resolutions.
+    L2Errors = zeros(1, length(h));
     for i=1:length(h)
-        geometry = @circleg;
-        [p,e,t] = initmesh(geometry, 'hmax', h(i));
-        
-        xi = CreateInitialData(p, @InitialBoobyFunction);
-
-        [U, M] = SolverCN(p, t, xi, 1/50, 50);
-
-        e = U(:,1)-U(:,end);
-        L2E(i) = sqrt(e'*M*e);
+        [U, M, p, t] = RunSimulationGFEM(h(i), @InitialBoobyFunction);
+        nodeError = U(:,1)-U(:,end);
+        L2Errors(i) = sqrt(nodeError'*M*nodeError);
     end
     
-    ls = polyfit(h', L2E, 2);
-    x = linspace(0,1/4,26);
-    y = zeros(1, 26);
-    for i=1:length(x)
-        y(i) = ls(1)*x(i)^2+ls(2)*x(i)+ls(3);
-    end %i
-    size(x)
-    size(y)
-    plot(h, L2E, 'r', x, y, 'b', 'linewidth', 2)
-    legend('Error function', 'Quadratic interpol.')
+    % Plot h vs L2Error
+    figure;
+    loglog(h, L2Errors);
     xlabel('h')
     ylabel('L^2-error')
-    print('ANM_Ass1_data1_convergence','-djpeg')
+    print('../Plots/problem_1_2_errors','-djpeg')
+
+    % Plot parabola    
+    coeffs = polyfit(h, L2Errors, 2);
+    x = linspace(0,1/4,26);
+    y = coeffs(1)*x.^2 + coeffs(2)*x + coeffs(3);
+
+    figure;
+    plot(h, L2Errors, 'r', x, y, 'b', 'linewidth', 2)
+    legend('Error function', 'Quadratic interpolation.')
+    xlabel('h')
+    ylabel('L^2-error')
+    print('../Plots/problem_1_2_convergence_fit','-djpeg')
 end
 
 
-% Initial datas
-function z = InitialBoobyFunction(x, y)
-    r_0 = 0.25;
-    x1_0 = 0.3;
-    x2_0 = 0;
+function Problem13()
+    h = [1/8, 1/16];
 
-    z = 1/2*(1-tanh(((x-x1_0)^2+(y-x2_0)^2)/(r_0^2)-1));
+    % Make animated plots.
+    for i=1:length(h)
+        [U, M, p, t] = RunSimulationGFEM(h(i), @InitialCylinderFunction);
+        figure;
+        pdesurf(p,t,U(:,size(U, 2)))
+        print(['../Plots/problem_1_3_result_', num2str(i)],'-djpeg')
+
+        animFileName = ['../Plots/animation_shock_h', num2str(i)];
+        MakeAnimation(p, t, U, animFileName, 1/20);
+    end
+
+    % Gather L2 errors for different mesh resolutions.
+    h = [1/4, 1/8, 1/16, 1/32];
+    L2Errors = zeros(1, length(h));
+    for i=1:length(h)
+        [U, M, p, t] = RunSimulationGFEM(h(i), @InitialCylinderFunction);
+        nodeError = U(:,1)-U(:,end);
+        L2Errors(i) = sqrt(nodeError'*M*nodeError);
+    end
+
+    % Plot h vs L2Error
+    figure;
+    loglog(h, L2Errors);
+    xlabel('h')
+    ylabel('L^2-error')
+    print('../Plots/problem_1_3_errors','-djpeg')
 end
 
-function z = InitialCylinderFunction(x, y) 
-    % TODO:
-    z = 0;
+
+function [U, M, p, t] = RunSimulationGFEM(meshSize, InitialData)
+    endTime = 1;
+    numIters = 51;
+    timeStep = endTime/numIters;
+
+    geometry = @circleg;
+    [p,e,t] = initmesh(geometry, 'hmax', meshSize);
+
+    xi = CreateInitialData(p, InitialData);
+
+    M = MassMatrixGFEM(p,t);
+    C = ConvectionMatrixGFEM(p,t);
+
+    U = SolverCN(M, C, xi, timeStep, numIters);
 end
+
+
+function MakeAnimation(p, t, U, fileName, frameTime)
+    h = figure;
+    axis tight manual % this ensures that getframe() returns a consistent size
+    for frameIdx = 1:size(U, 2)
+        % Draw plot
+        pdesurf(p, t, U(:,frameIdx))
+        drawnow
+        % Capture the plot as an image
+        frame = getframe(h);
+        im = frame2im(frame); 
+        [imind,cm] = rgb2ind(im,256); 
+        % Write to the GIF File
+        if frameIdx == 1 
+            imwrite(imind,cm,[fileName, '.gif'],'gif', 'Loopcount',inf,'DelayTime',frameTime); 
+        else 
+            imwrite(imind,cm,[fileName, '.gif'],'gif','WriteMode','append','DelayTime',frameTime); 
+        end
+    end
+end
+
