@@ -1,7 +1,7 @@
 Problem11();
 Problem12();
 Problem13();
-%%
+close all;
 
 function Problem11()
     h = [1/8, 1/16];
@@ -31,17 +31,21 @@ function Problem12()
     
     % Plot h vs L2Error
     figure;
+    subplot(1,2,1)
     loglog(h, L2Errors);
     xlabel('h')
     ylabel('L^2-error')
-    print('../Plots/problem_1_2_errors','-djpeg')
-
-    % Plot parabola    
+    % ... plot h_max vs h_max^2 on the same plot
+    hold on
+    loglog(h, h.^2, 'b', 'linewidth', 2)
+    legend('Error function', 'h_{max} versus h_{max}^{2}')
+    xlabel('h')
+    ylabel('L^2-error')
+    % ... plot parabola    
     coeffs = polyfit(h, L2Errors, 2);
     x = linspace(0,1/4,26);
     y = coeffs(1)*x.^2 + coeffs(2)*x + coeffs(3);
-
-    figure;
+    subplot(1,2,2)
     plot(h, L2Errors, 'r', x, y, 'b', 'linewidth', 2)
     legend('Error function', 'Quadratic interpolation.')
     xlabel('h')
@@ -78,6 +82,12 @@ function Problem13()
     loglog(h, L2Errors);
     xlabel('h')
     ylabel('L^2-error')
+    % ... plot h_max vs h_max^2 on the same plot
+    hold on
+    loglog(h, h.^1, 'b', 'linewidth', 2)
+    legend('Error function', 'h_{max} versus h_{max}^{1}')
+    xlabel('h')
+    ylabel('L^2-error')    
     print('../Plots/problem_1_3_errors','-djpeg')
 end
 
@@ -88,6 +98,7 @@ function [U, M, p, t] = RunSimulationGFEM(meshSize, InitialData)
     fPrimeMax = 2*pi*0.5; % 2*pi*[-y, x] over a circle w/ r=0.5
     timeStep = CFL*meshSize / fPrimeMax;
     numIters = ceil(endTime/timeStep);
+    timeStep = endTime / numIters;
 
     geometry = @circleg;
     [p,e,t] = initmesh(geometry, 'hmax', meshSize);

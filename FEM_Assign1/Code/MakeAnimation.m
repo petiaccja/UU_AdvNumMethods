@@ -4,6 +4,9 @@ function MakeAnimation(p, t, U, fileName, frameTime)
     for frameIdx = 1:size(U, 2)
         % Draw plot
         pdesurf(p, t, U(:,frameIdx))
+        xlim([-1,1]);
+        ylim([-1,1]);
+        zlim([-0.3,1.3]);
         drawnow
         % Capture the plot as an image
         frame = getframe(h);
