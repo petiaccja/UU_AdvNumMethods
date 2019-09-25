@@ -5,16 +5,15 @@ t_old = t_0;
 y_old = y_0;
 y = y_0;
 for i=1:n
-    k_1 = f(t_old, y_old);
-    k_2 = f(t_old+h/2,y_old+h/2*k_1);
-    k_3 = f(t_old+h/2,y_old+h/2*k_2);
-    k_4 = f(t_old+h,y_old+h*k_3);
+    k_1 = h*f(t_old, y_old);
+    k_2 = h*f(t_old+h/2, y_old+k_1/2);
+    k_3 = h*f(t_old+h/2, y_old+k_2/2);
+    k_4 = h*f(t_old+h, y_old+k_3);
     
-    y_new = y_old + h*1/6*(k_1+2*k_2+2*k_3+k_4);
+    y_new = y_old + 1/6*(k_1+2*k_2+2*k_3+k_4);
     
     t_old = t_old + h;
     y_old = y_new;
-    size(y_old)
     y = [y,y_old];
 end %for, i
 

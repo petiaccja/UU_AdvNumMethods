@@ -1,7 +1,7 @@
 %diagonal matrix
 lambda = [-1,0;0,1];
 
-m=31; %problemstorlek
+m=129; %problemstorlek
 h=1/(m-1);
 
 % Second order accurate SBP operators. Specify nummber of gripdpoints and h
@@ -78,7 +78,7 @@ for i=1:m
     v1 = y(1:m,i);
     v2 = y(m+1:end,i);
     plot(space, v1, 'r', space, v2, 'b');
-    pause(.25)
+    pause(.1)
     drawnow;
 end %for, i
 
