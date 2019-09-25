@@ -1,5 +1,7 @@
 Problem11();
+close all;
 Problem12();
+close all;
 Problem13();
 close all;
 
@@ -37,17 +39,17 @@ function Problem12()
     ylabel('L^2-error')
     % ... plot h_max vs h_max^2 on the same plot
     hold on
-    loglog(h, h.^2, 'b', 'linewidth', 2)
-    legend('Error function', 'h_{max} versus h_{max}^{2}')
+    loglog(h, h.^1, 'b', 'linewidth', 2)
+    legend('Error function', 'h_{max} versus h_{max}^{1}')
     xlabel('h')
     ylabel('L^2-error')
-    % ... plot parabola    
-    coeffs = polyfit(h, L2Errors, 2);
+    % ... plot interpolation
+    coeffs = polyfit(h, L2Errors, 1);
     x = linspace(0,1/4,26);
-    y = coeffs(1)*x.^2 + coeffs(2)*x + coeffs(3);
+    y = coeffs(1)*x + coeffs(2);
     subplot(1,2,2)
     plot(h, L2Errors, 'r', x, y, 'b', 'linewidth', 2)
-    legend('Error function', 'Quadratic interpolation.')
+    legend('Error function', 'Linear interpolation.')
     xlabel('h')
     ylabel('L^2-error')
     print('../Plots/problem_1_2_convergence_fit','-djpeg')
@@ -79,6 +81,7 @@ function Problem13()
 
     % Plot h vs L2Error
     figure;
+    subplot(1,2,1)
     loglog(h, L2Errors);
     xlabel('h')
     ylabel('L^2-error')
@@ -86,6 +89,15 @@ function Problem13()
     hold on
     loglog(h, h.^1, 'b', 'linewidth', 2)
     legend('Error function', 'h_{max} versus h_{max}^{1}')
+    xlabel('h')
+    ylabel('L^2-error')    
+    % ... plot interpolation    
+    coeffs = polyfit(h, L2Errors, 1);
+    x = linspace(0,1/4,26);
+    y = coeffs(1)*x + coeffs(2);
+    subplot(1,2,2)
+    plot(h, L2Errors, 'r', x, y, 'b', 'linewidth', 2)
+    legend('Error function', 'Linear interpolation.')
     xlabel('h')
     ylabel('L^2-error')    
     print('../Plots/problem_1_3_errors','-djpeg')
