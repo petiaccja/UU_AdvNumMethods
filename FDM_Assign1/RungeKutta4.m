@@ -1,4 +1,4 @@
-function [ y ] = ANM_FDM_RK4( f, t_0, y_0, h, n )
+function [ y ] = RungeKutta4( f, t_0, y_0, h, n )
 %Standard Runge Kutta Method
 
 t_old = t_0;

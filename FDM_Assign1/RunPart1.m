@@ -72,7 +72,7 @@ for i=1:m
     v2(i) = u_2(space(i));
 end %for, i
 y_0 = [v1;v2];
-y = ANM_FDM_RK4(f, 0, y_0, h, m);
+y = RungeKutta4(f, 0, y_0, h, m);
 
 for i=1:m
     v1 = y(1:m,i);
