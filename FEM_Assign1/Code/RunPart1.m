@@ -107,7 +107,7 @@ end
 function [U, M, p, t] = RunSimulationGFEM(meshSize, InitialData)
     endTime = 1;
     CFL = 0.5;
-    fPrimeMax = 2*pi*0.5; % 2*pi*[-y, x] over a circle w/ r=0.5
+    fPrimeMax = 2*pi*0.5; % ||2*pi*[-y, x]|| over a circle w/ r=0.5
     timeStep = CFL*meshSize / fPrimeMax;
     numIters = ceil(endTime/timeStep);
     timeStep = endTime / numIters;
