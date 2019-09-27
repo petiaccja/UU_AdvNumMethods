@@ -19,33 +19,17 @@ x = linspace(x_l, x_r, gridDim)';
 domainLength = x_r - x_l;
 rr = 0.1;
 
-[H, Q, D1, D2, M] = MakeSBP6Operators(gridDim);
-[Aplus, Aminus] = SplitMatrix(A);
- 
-e_1=zeros(gridDim,1);e_1(1)=1;
-e_m=zeros(gridDim,1);e_m(gridDim)=1;
-
 
 % Prepare simulation
 [u10, u20] = InitialData(x, rr);
 v = [u10; u20];
 
-Cmod = kron(C, eye(gridDim));
-M = kron(A, D1);
-SAT_R_CBC = -kron(Aplus,inv(H)*e_m)*kron(eye(2),e_m');
-SAT_L_CBC = kron(Aminus,inv(H)*e_1)*kron(eye(2),e_1');
-
-tau_l = [0; 1];
-tau_r = [0; -1];
-SAT_L_DBC = kron(tau_l, inv(H)*e_1)*kron([1 0], e_1');
-SAT_R_DBC = kron(tau_r, inv(H)*e_m)*kron([1 0], e_m');
-
-AdvanceMatrix = inv(Cmod)*(M + SAT_L_DBC + SAT_R_DBC);
-eigenValues = eig(AdvanceMatrix);
+M = MakeAdvanceMatrix(C, A, gridDim, @MakeSBP6Operators, @MakeBoundariesDBC);
+eigenValues = eig(M);
 fprintf("Largest real part of eig(A): %g\n", max(real(eigenValues)));
 %return;
 
-Advance = @(t, v) AdvanceMatrix*v;
+Advance = @(t, v) M*v;
 
 
 % Do iterations
@@ -61,13 +45,4 @@ for i=1:ceil(2/deltaT)
     ylim([-1, 1]);
     drawnow;
     pause(0.005);
-end
-
-
-
-function Am = MakeAdvanceMatrix(C, A, gridDim, MakeSBPOperators, MakeBoundaries)
-    [H, Q, D1, D2, M] = MakeSBP6Operators(gridDim);
-
-    e_1=zeros(gridDim,1);e_1(1)=1;
-    e_m=zeros(gridDim,1);e_m(gridDim)=1;
 end
