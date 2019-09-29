@@ -1,7 +1,7 @@
-function convectionMatrix = ConvectionMatrixGFEM(p,t)
-    numNodes=size(p,2);
-    numTriangles=size(t,2);
-    convectionMatrix=sparse(numNodes, numNodes);
+function massMatrix = MassMatrixLS(p,t)
+    numNodes = size(p,2);
+    numTriangles = size(t,2);
+    massMatrix = sparse(numNodes,numNodes);
     
     for i=1:numTriangles
         nodeIndices = t(1:3,i);
@@ -14,6 +14,6 @@ function convectionMatrix = ConvectionMatrixGFEM(p,t)
         bymid = mean(2*pi*x);
     
         subMatrix=ones(3,1)*(bxmid*b + bymid*c)'*area/3;
-        convectionMatrix(nodeIndices,nodeIndices) = convectionMatrix(nodeIndices,nodeIndices) + subMatrix;
+        massMatrix(nodeIndices,nodeIndices) = massMatrix(nodeIndices,nodeIndices) + subMatrix;
     end
 end
