@@ -27,19 +27,19 @@ v = RunSimulation(C, A, gridDim, deltaT, endT, x_l, x_r, @MakeSBP6Operators, @Ma
 figure;
 plot(x, v(1:gridDim), 'b', x, v(gridDim+1:end), '--r');
 ylim([-1, 1]);
-xlabel("x");
-ylabel("u(x, t)");
-legend("E=u_1", "H=u_2");
-title("Solution: Dirichelet BCs, 6th order, m=201");
+xlabel('x');
+ylabel('u(x, t)');
+legend('E=u_1', 'H=u_2');
+title('Solution: Dirichelet BCs, 6th order, m=201');
 
 v = RunSimulation(C, A, gridDim, deltaT, endT, x_l, x_r, @MakeSBP6Operators, @MakeBoundariesCBC);
 figure;
 plot(x, v(1:gridDim), 'b', x, v(gridDim+1:end), '--r');
 ylim([-1, 1]);
-xlabel("x");
-ylabel("u(x, t)");
-legend("E=u_1", "H=u_2");
-title("Solution: Characteristic BCs, 6th order, m=201");
+xlabel('x');
+ylabel('u(x, t)');
+legend('E=u_1', 'H=u_2');
+title('Solution: Characteristic BCs, 6th order, m=201');
 
 
 

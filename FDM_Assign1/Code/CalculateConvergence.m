@@ -1,5 +1,5 @@
-function q = CalculateConvergence(C, A, MakeSBPOperators, MakeBoundariesDBC)
-    gridDims = [31, 61];
+function q = CalculateConvergence(C, A, MakeSBPOperators, MakeBoundaries)
+    gridDims = [201, 401];
     x_l = -1;
     x_r = 1;
     norms = [0, 0];    
@@ -11,7 +11,7 @@ function q = CalculateConvergence(C, A, MakeSBPOperators, MakeBoundariesDBC)
         endT = ceil(0.75/deltaT)*deltaT;
         x = linspace(x_l, x_r, gridDim)';
         
-        v = RunSimulation(C, A, gridDim, deltaT, endT, x_l, x_r, MakeSBPOperators, MakeBoundariesDBC);
+        v = RunSimulation(C, A, gridDim, deltaT, endT, x_l, x_r, MakeSBPOperators, MakeBoundaries);
         [u1, u2] = AnalyticSolution(x, endT, x_r-x_l, 0.1);
         norms(i) = sqrt(deltaX)*norm(v - [u1; u2]);
     end
