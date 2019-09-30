@@ -1,8 +1,8 @@
 Problem11();
 close all;
-%Problem12();
+Problem12();
 close all;
-%Problem13();
+Problem13();
 close all;
 
 function Problem11()
@@ -117,9 +117,9 @@ function [U, M, p, t] = RunSimulationGLS(meshSize, InitialData)
 
     xi = CreateInitialData(p, InitialData);
 
-    delta = 1;
-    M = 0*MassMatrixGFEM(p,t) + delta*MassMatrixLS(p,t);
-    C = 0*ConvectionMatrixGFEM(p,t) + delta*ConvectionMatrixLS(p,t);
+    delta = 0.03;
+    M = MassMatrixGFEM(p,t) + delta*MassMatrixLS(p,t);
+    C = ConvectionMatrixGFEM(p,t) + delta*ConvectionMatrixLS(p,t);
 
     U = SolverCN(M, C, xi, timeStep, numIters);
 end
