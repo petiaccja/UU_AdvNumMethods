@@ -11,22 +11,12 @@ function [U, M] = SolverRV(p, t, xiInitial, timeStep, numIters)
     r = zeros(size(t,2), 1);
     
     for i=1:numIters
-        RV = ConvectionMatrixRV(p, t, xi, r)*0;
+        RV = ConvectionMatrixRV(p, t, xi, r);
         A = 1/2*C + 1/timeStep*M + 1/2*RV;
         B = -1/2*C + 1/timeStep*M - 1/2*RV;
         bb = B*xi;
         xi_new = A\bb;
         r = Residual(p, t, xi_new, xi, timeStep);
-        
-        figure(9);
-        pdesurf(p, t, r);
-        hold on;
-        line([0,1.5],[0,0],[0,0],'Color','red', 'LineWidth', 2);
-        line([0,0],[0,1.5],[0,0],'Color','green', 'LineWidth', 2);
-        line([0,0],[0,0],[0,1.5],'Color','blue', 'LineWidth', 2);
-        hold off;
-        title("Residual");
-
         xi = xi_new;
         U(:,i+1)=xi;
     end
