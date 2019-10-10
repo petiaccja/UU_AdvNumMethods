@@ -1,45 +1,31 @@
 close all;
-%Problem2TestGLS();
-Problem2TestRV();
-return;
+Problem22();
 close all;
-%Problem22();
-close all;
-%Problem23();
+Problem23();
 close all;
 
-function Problem2TestGLS()
-    h = 1/16;
+function MakeAnims(RunSimulationFunc, InitialFunc, simName)
+    h = [1/8, 1/16];
 
-    [U, M, p, t] = RunSimulationGLS(h, @InitialBoobyFunction);
-    figure;
-    pdesurf(p,t,U(:,size(U, 2)))
-    print(['../Plots/problem_2_1_result_gls'],'-djpeg')
+    for i=1:length(h)
+        [U, M, p, t] = RunSimulationFunc(h(i), InitialFunc);
+        figure;
+        pdesurf(p,t,U(:,size(U, 2)))
+        print(['../Plots/problem_2_2_result_', simName, '_', num2str(i)],'-djpeg')
 
-    animFileName = ['../Plots/animation_gls_smooth_h'];
-    MakeAnimation(p, t, U, animFileName, 1/20);
-end
-
-function Problem2TestRV()
-    h = 1/16;
-
-    [U, M, p, t] = RunSimulationRV(h, @InitialBoobyFunction);
-    figure;
-    pdesurf(p,t,U(:,size(U, 2)))
-    print(['../Plots/problem_2_1_result_rv'],'-djpeg')
-
-    animFileName = ['../Plots/animation_rv_smooth_h'];
-    MakeAnimation(p, t, U, animFileName, 1/20);
+        animFileName = ['../Plots/animation_smooth_', simName, '_h', num2str(i)];
+        MakeAnimation(p, t, U, animFileName, 1/20);
+    end
 end
 
 
-function Problem22()
+function CalcConvergence(RunSimulationFunc, InitialFunc, simName)
     h = [1/4, 1/8, 1/16, 1/32];
 
     % Gather L2 errors for different mesh resolutions.
     L2Errors = zeros(1, length(h));
     for i=1:length(h)
-        [U, M, p, t] = RunSimulationGLS(h(i), @InitialBoobyFunction);
+        [U, M, p, t] = RunSimulationFunc(h(i), InitialFunc);
         nodeError = U(:,1)-U(:,end);
         L2Errors(i) = sqrt(nodeError'*M*nodeError);
     end
@@ -65,55 +51,21 @@ function Problem22()
     legend('Error function', 'Linear interpolation.')
     xlabel('h')
     ylabel('L^2-error')
-    print('../Plots/problem_1_2_convergence_fit','-djpeg')
+    print(['../Plots/problem_2_2_convergence_fit_', simName], '-djpeg')
 end
 
+function Problem22()
+    MakeAnims(@RunSimulationGLS, @InitialBoobyFunction, 'gls');
+    MakeAnims(@RunSimulationRV, @InitialBoobyFunction, 'rv');
+    CalcConvergence(@RunSimulationGLS, @InitialBoobyFunction, 'gls');
+    CalcConvergence(@RunSimulationRV, @InitialBoobyFunction, 'rv');
+end
 
 function Problem23()
-    h = [1/8, 1/16];
-
-    % Make animated plots.
-    for i=1:length(h)
-        [U, M, p, t] = RunSimulationGLS(h(i), @InitialCylinderFunction);
-        figure;
-        pdesurf(p,t,U(:,size(U, 2)))
-        print(['../Plots/problem_1_3_result_', num2str(i)],'-djpeg')
-
-        animFileName = ['../Plots/animation_shock_h', num2str(i)];
-        MakeAnimation(p, t, U, animFileName, 1/20);
-    end
-
-    % Gather L2 errors for different mesh resolutions.
-    h = [1/4, 1/8, 1/16, 1/32];
-    L2Errors = zeros(1, length(h));
-    for i=1:length(h)
-        [U, M, p, t] = RunSimulationGLS(h(i), @InitialCylinderFunction);
-        nodeError = U(:,1)-U(:,end);
-        L2Errors(i) = sqrt(nodeError'*M*nodeError);
-    end
-
-    % Plot h vs L2Error
-    figure;
-    subplot(1,2,1)
-    loglog(h, L2Errors);
-    xlabel('h')
-    ylabel('L^2-error')
-    % ... plot h_max vs h_max^2 on the same plot
-    hold on
-    loglog(h, h.^1, 'b', 'linewidth', 2)
-    legend('Error function', 'h_{max} versus h_{max}^{1}')
-    xlabel('h')
-    ylabel('L^2-error')    
-    % ... plot interpolation    
-    coeffs = polyfit(h, L2Errors, 1);
-    x = linspace(0,1/4,26);
-    y = coeffs(1)*x + coeffs(2);
-    subplot(1,2,2)
-    plot(h, L2Errors, 'r', x, y, 'b', 'linewidth', 2)
-    legend('Error function', 'Linear interpolation.')
-    xlabel('h')
-    ylabel('L^2-error')    
-    print('../Plots/problem_1_3_errors','-djpeg')
+    MakeAnims(@RunSimulationGLS, @InitialCylinderFunction, 'gls');
+    MakeAnims(@RunSimulationRV, @InitialCylinderFunction, 'rv');
+    CalcConvergence(@RunSimulationGLS, @InitialCylinderFunction, 'gls');
+    CalcConvergence(@RunSimulationRV, @InitialCylinderFunction, 'rv');
 end
 
 
