@@ -21,7 +21,7 @@ end
 function hk = ElementMeshSize(x, y)
     sideXs = x - x([2,3,1]);
     sideYs = y - y([2,3,1]);
-    sides = sqrt(sideXs.^2 + sideY.^2);
+    sides = sqrt(sideXs.^2 + sideYs.^2);
     hk = max(sides);
 end
 

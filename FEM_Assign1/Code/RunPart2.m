@@ -1,26 +1,39 @@
-Problem11();
 close all;
-Problem12();
+%Problem2TestGLS();
+Problem2TestRV();
+return;
 close all;
-Problem13();
+%Problem22();
+close all;
+%Problem23();
 close all;
 
-function Problem11()
-    h = [1/8, 1/16];
+function Problem2TestGLS()
+    h = 1/16;
 
-    for i=1:length(h)
-        [U, M, p, t] = RunSimulationGLS(h(i), @InitialBoobyFunction);
-        figure;
-        pdesurf(p,t,U(:,size(U, 2)))
-        print(['../Plots/problem_1_1_result_', num2str(i)],'-djpeg')
+    [U, M, p, t] = RunSimulationGLS(h, @InitialBoobyFunction);
+    figure;
+    pdesurf(p,t,U(:,size(U, 2)))
+    print(['../Plots/problem_2_1_result_gls'],'-djpeg')
 
-        animFileName = ['../Plots/animation_smooth_h', num2str(i)];
-        MakeAnimation(p, t, U, animFileName, 1/20);
-    end
+    animFileName = ['../Plots/animation_gls_smooth_h'];
+    MakeAnimation(p, t, U, animFileName, 1/20);
+end
+
+function Problem2TestRV()
+    h = 1/16;
+
+    [U, M, p, t] = RunSimulationRV(h, @InitialBoobyFunction);
+    figure;
+    pdesurf(p,t,U(:,size(U, 2)))
+    print(['../Plots/problem_2_1_result_rv'],'-djpeg')
+
+    animFileName = ['../Plots/animation_rv_smooth_h'];
+    MakeAnimation(p, t, U, animFileName, 1/20);
 end
 
 
-function Problem12()
+function Problem22()
     h = [1/4, 1/8, 1/16, 1/32];
 
     % Gather L2 errors for different mesh resolutions.
@@ -56,7 +69,7 @@ function Problem12()
 end
 
 
-function Problem13()
+function Problem23()
     h = [1/8, 1/16];
 
     % Make animated plots.
@@ -122,4 +135,21 @@ function [U, M, p, t] = RunSimulationGLS(meshSize, InitialData)
     C = ConvectionMatrixGFEM(p,t) + delta*ConvectionMatrixLS(p,t);
 
     U = SolverCN(M, C, xi, timeStep, numIters);
+end
+
+
+function [U, M, p, t] = RunSimulationRV(meshSize, InitialData)
+    endTime = 1;
+    CFL = 0.5;
+    fPrimeMax = 2*pi*0.5; % ||2*pi*[-y, x]|| over a circle w/ r=0.5
+    timeStep = CFL*meshSize / fPrimeMax;
+    numIters = ceil(endTime/timeStep);
+    timeStep = endTime / numIters;
+
+    geometry = @circleg;
+    [p,e,t] = initmesh(geometry, 'hmax', meshSize);
+
+    xi = CreateInitialData(p, InitialData);
+
+    [U, M] = SolverRV(p, t, xi, timeStep, numIters); % TODO: add proper numIters
 end
