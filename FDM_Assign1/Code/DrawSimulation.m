@@ -9,7 +9,7 @@ function DrawSimulation(C, A, gridDim, deltaT, endT, x_l, x_r)
 
     M = MakeAdvanceMatrix(C, A, gridDim, @MakeSBP6Operators, @MakeBoundariesCBC);
     eigenValues = eig(M);
-    fprintf("Largest real part of eig(A): %g\n", max(real(eigenValues)));
+    fprintf('Largest real part of eig(A): %g\n', max(real(eigenValues)));
 
     Advance = @(t, v) M*v;
 
