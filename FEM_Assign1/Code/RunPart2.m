@@ -11,9 +11,9 @@ function MakeAnims(RunSimulationFunc, InitialFunc, simName)
         [U, M, p, t] = RunSimulationFunc(h(i), InitialFunc);
         figure;
         pdesurf(p,t,U(:,size(U, 2)))
-        print(['../Plots/problem_2_2_result_', simName, '_', num2str(i)],'-djpeg')
+        print(['../Plots/problem_2_result_', simName, '_', num2str(i)],'-djpeg')
 
-        animFileName = ['../Plots/animation_smooth_', simName, '_h', num2str(i)];
+        animFileName = ['../Plots/animation_', simName, '_h', num2str(i)];
         MakeAnimation(p, t, U, animFileName, 1/20);
     end
 end
@@ -51,21 +51,27 @@ function CalcConvergence(RunSimulationFunc, InitialFunc, simName)
     legend('Error function', 'Linear interpolation.')
     xlabel('h')
     ylabel('L^2-error')
-    print(['../Plots/problem_2_2_convergence_fit_', simName], '-djpeg')
+    print(['../Plots/problem_2_convergence_fit_', simName], '-djpeg')
 end
 
 function Problem22()
-    MakeAnims(@RunSimulationGLS, @InitialBoobyFunction, 'gls');
-    MakeAnims(@RunSimulationRV, @InitialBoobyFunction, 'rv');
-    CalcConvergence(@RunSimulationGLS, @InitialBoobyFunction, 'gls');
-    CalcConvergence(@RunSimulationRV, @InitialBoobyFunction, 'rv');
+    MakeAnims(@RunSimulationGLS, @InitialBoobyFunction, 'gls_smooth');
+    close all;
+    MakeAnims(@RunSimulationRV, @InitialBoobyFunction, 'rv_smooth');
+    close all;
+    CalcConvergence(@RunSimulationGLS, @InitialBoobyFunction, 'gls_smooth');
+    CalcConvergence(@RunSimulationRV, @InitialBoobyFunction, 'rv_smooth');
+    close all;
 end
 
 function Problem23()
-    MakeAnims(@RunSimulationGLS, @InitialCylinderFunction, 'gls');
-    MakeAnims(@RunSimulationRV, @InitialCylinderFunction, 'rv');
-    CalcConvergence(@RunSimulationGLS, @InitialCylinderFunction, 'gls');
-    CalcConvergence(@RunSimulationRV, @InitialCylinderFunction, 'rv');
+    MakeAnims(@RunSimulationGLS, @InitialCylinderFunction, 'gls_shock');
+    close all;
+    MakeAnims(@RunSimulationRV, @InitialCylinderFunction, 'rv_shock');
+    close all;
+    CalcConvergence(@RunSimulationGLS, @InitialCylinderFunction, 'gls_shock');
+    CalcConvergence(@RunSimulationRV, @InitialCylinderFunction, 'rv_shock');
+    close all;
 end
 
 
