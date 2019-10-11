@@ -1,7 +1,7 @@
 function convectionMatrix = ConvectionMatrixGFEM(p,t)
-    numNodes=size(p,2);
-    numTriangles=size(t,2);
-    convectionMatrix=sparse(numNodes, numNodes);
+    numNodes = size(p,2);
+    numTriangles = size(t,2);
+    convectionMatrix = sparse(numNodes, numNodes);
     
     for i=1:numTriangles
         nodeIndices = t(1:3,i);

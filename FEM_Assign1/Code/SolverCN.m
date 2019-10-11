@@ -8,7 +8,7 @@ function U = SolverCN(massMatrix, convectionMatrix, xiInitial, timeStep, numIter
     U = zeros(numNodes, numIters+1);
     U(:,1) = xi;    
     
-    for i=1:numIters    
+    for i=1:numIters
         bb = B*xi;
         xi_new = A\bb;
         xi = xi_new;
