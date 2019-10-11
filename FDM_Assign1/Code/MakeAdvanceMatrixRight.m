@@ -9,5 +9,5 @@ function MRight = MakeAdvanceMatrixRight(C, A, gridDim, MakeSBPOperators, MakeBo
     
     [SAT, SAT_L, SAT_R] = MakeBoundaries(A, H, e_1, e_m);
     
-    M = inv(Cmod)*(FD+SAT_R);
+    MRight = inv(Cmod)*(FD+SAT_R);
 end

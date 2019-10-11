@@ -9,6 +9,6 @@ function MLeft = MakeAdvanceMatrixLeft(C, A, gridDim, MakeSBPOperators, MakeBoun
     
     [SAT, SAT_L, SAT_R] = MakeBoundaries(A, H, e_1, e_m);
     
-    M = inv(Cmod)*(FD+SAT_L);
+    MLeft = inv(Cmod)*(FD+SAT_L);
 end
 

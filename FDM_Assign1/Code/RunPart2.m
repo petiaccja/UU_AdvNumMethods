@@ -2,44 +2,21 @@ close all;
 clear all;
 
 % Model definition: Cu_t  = Au_x
-permittivity = 1;
+permittivity1 = 1.4142;
+permittivity2 = 0.7071;
 permeability = 1;
 
 A = [0 1; 1 0];
-C = [permittivity 0; 0 permeability];
+C1 = [permittivity1 0; 0 permeability];
+C2 = [permittivity2 0; 0 permeability];
 
 
 gridDim = 201;
 
-%% Eigenvalues DBC
-M = MakeAdvanceMatrix(C, A, gridDim, @MakeSBP2Operators, @MakeBoundariesDBC);
-eigM = eig(M);
-subplot(1,2,1)
-plot(real(eigM), imag(eigM), '.')
-xlabel('Re')
-ylabel('Im')
-title('Eigenvalues, DBC')
-xlim([-0.5,0])
-subplot(1,2,2)
-plot(real(eigM), imag(eigM), '.')
-xlabel('Re')
-ylabel('Im')
-title('Eigenvalues, DBC')
-print('FDM_Ass1_DBC_eigenvalues2','-djpeg')
-
-%% Eigenvalues CBC
-M = MakeAdvanceMatrix(C, A, gridDim, @MakeSBP2Operators, @MakeBoundariesCBC);
-eigM = eig(M);
-plot(real(eigM), imag(eigM), '.')
-xlabel('Re')
-ylabel('Im')
-title('Eigenvalues, CBC')
-print('FDM_Ass1_CBC_eigenvalues2','-djpeg')
-
 %% Calculate convergence rate
-q2 = CalculateConvergence(C, A, @MakeSBP2Operators, @MakeBoundariesDBC)
-q4 = CalculateConvergence(C, A, @MakeSBP4Operators, @MakeBoundariesDBC)
-q6 = CalculateConvergence(C, A, @MakeSBP6Operators, @MakeBoundariesDBC)
+%q2 = CalculateConvergence(C, A, @MakeSBP2Operators, @MakeBoundariesDBC)
+%q4 = CalculateConvergence(C, A, @MakeSBP4Operators, @MakeBoundariesDBC)
+%q6 = CalculateConvergence(C, A, @MakeSBP6Operators, @MakeBoundariesDBC)
 
 %% Plot results for SBP6
 gridDim = 201;
@@ -51,7 +28,8 @@ x_l = -1;
 x_r = 1;
 x = linspace(x_l, x_r, gridDim)';
 
-v = RunSimulation(C, A, gridDim, deltaT, endT, x_l, x_r, @MakeSBP6Operators, @MakeBoundariesDBC);
+[vl, vr] = RunSimulationInterface(C1, C2, A, gridDim, deltaT, endT, x_l, x_r, @MakeSBP6Operators, @MakeBoundariesDBC);
+v = [vl; vr];
 figure;
 plot(x, v(1:gridDim), 'b', x, v(gridDim+1:end), '--r');
 ylim([-1, 1]);
