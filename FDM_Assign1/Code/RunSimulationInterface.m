@@ -1,7 +1,7 @@
 function [u, v] = RunSimulationInterface(C1, C2, A, gridDim, deltaT, endT, x_l, x_r, MakeSBPOperators, MakeBoundariesDBC)
     rr = 0.1;
     x = linspace(x_l, x_r, gridDim)';
-    [u10, u20] = InitialData(x, rr);
+    [u10, u20] = InitialData(x+0.5, rr);
     
     gridDimL = ceil(gridDim/2);
     gridDimR = gridDim - gridDimL;
@@ -22,10 +22,11 @@ function [u, v] = RunSimulationInterface(C1, C2, A, gridDim, deltaT, endT, x_l, 
         u = RungeKutta4Step(AdvanceLeft, i*deltaT, u, deltaT);
         v = RungeKutta4Step(AdvanceRight, i*deltaT, v, deltaT);
 
-        uv = [u; v];
+        uv = [u(1:gridDimL); v(1:gridDimL); u(gridDimL+1:end); v(gridDimL+1:end)];
         figure(9);
         plot(x, uv(1:gridDim), 'b', x, uv(gridDim+1:end), '--r');
         ylim([-1, 1]);
+        title(['T=', num2str(i*deltaT)]);
         drawnow;
     end
 end
