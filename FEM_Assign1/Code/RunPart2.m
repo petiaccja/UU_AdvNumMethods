@@ -1,4 +1,6 @@
 close all;
+ProblemOptimal();
+close all;
 Problem22();
 close all;
 Problem23();
@@ -11,6 +13,7 @@ function MakeAnims(RunSimulationFunc, InitialFunc, simName)
         [U, M, p, t] = RunSimulationFunc(h(i), InitialFunc);
         figure;
         pdesurf(p,t,U(:,size(U, 2)))
+        zlim([-1, 1]);
         print(['../Plots/problem_2_result_', simName, '_', num2str(i)],'-djpeg')
 
         animFileName = ['../Plots/animation_', simName, '_h', num2str(i)];
@@ -74,6 +77,29 @@ function Problem23()
     close all;
 end
 
+function ProblemOptimal()
+
+    h = 1/16;
+
+    [U, M, p, t] = RunSimulationGLS(h, @InitialCylinderFunction);
+    figure;
+    pdesurf(p,t,U(:,size(U, 2)))
+    zlim([-1, 1]);
+    print('../Plots/problem_2_result_gls_opt','-djpeg')
+
+    animFileName = '../Plots/animation_gls_opt';
+    MakeAnimation(p, t, U, animFileName, 1/20);
+    
+    [U, M, p, t] = RunSimulationRV(h, @InitialCylinderFunction);
+    figure;
+    pdesurf(p,t,U(:,size(U, 2)))
+    zlim([-1, 1]);
+    print('../Plots/problem_2_result_rv_opt','-djpeg')
+
+    animFileName = '../Plots/animation_rv_opt';
+    MakeAnimation(p, t, U, animFileName, 1/20);
+
+end
 
 function [U, M, p, t] = RunSimulationGLS(meshSize, InitialData)
     endTime = 1;
