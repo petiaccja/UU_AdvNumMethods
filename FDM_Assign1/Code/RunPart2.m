@@ -32,14 +32,14 @@ x = linspace(x_l, x_r, gridDim)';
 gridDimL = length(vl)/2;
 gridDimR = length(vr)/2;
 v = [vl(1:gridDimL); vr(1:gridDimL); vl(gridDimL+1:end); vr(gridDimL+1:end)];
-figure;
-plot(x, v(1:gridDim), 'b', x, v(gridDim+1:end), '--r');
+%figure;
+%plot(x, v(1:gridDim), 'b', x, v(gridDim+1:end), '--r');
 %ylim([-1, 1]);
-xlabel('x');
-ylabel('u(x, t)');
-legend('E=u_1', 'H=u_2');
-title('Solution: Dirichlet BCs, 6th order, m=201');
-print('FDM_Ass1_DBC_6thOrder','-djpeg')
+%xlabel('x');
+%ylabel('u(x, t)');
+%legend('E=u_1', 'H=u_2');
+%title('Solution: Dirichlet BCs, 6th order, m=201');
+%print('FDM_Ass1_DBC_6thOrder','-djpeg')
 
 
 refrectingIndex1 = sqrt(permittivity1);
