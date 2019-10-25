@@ -1,4 +1,3 @@
-function [u1, u2] = AnalyticSolution(x, t, L, rr)
-    u1 = Theta1(x, L-L*t, rr) - Theta2(x, L-L*t, rr);
-    u2 = Theta1(x, L-L*t, rr) + Theta2(x, L-L*t, rr);
+function [u] = AnalyticSolution(x, t, c, a, eps)
+     u = c - a*tanh(a*(x-c*t)/(2*eps));
 end

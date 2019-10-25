@@ -1,9 +1,9 @@
 close all;
-ProblemOptimal();
+%ProblemOptimal();
 close all;
 Problem22();
 close all;
-Problem23();
+%Problem23();
 close all;
 
 function MakeAnims(RunSimulationFunc, InitialFunc, simName)
@@ -60,10 +60,10 @@ end
 function Problem22()
     MakeAnims(@RunSimulationGLS, @InitialBoobyFunction, 'gls_smooth');
     close all;
-    MakeAnims(@RunSimulationRV, @InitialBoobyFunction, 'rv_smooth');
+    %MakeAnims(@RunSimulationRV, @InitialBoobyFunction, 'rv_smooth');
     close all;
-    CalcConvergence(@RunSimulationGLS, @InitialBoobyFunction, 'gls_smooth');
-    CalcConvergence(@RunSimulationRV, @InitialBoobyFunction, 'rv_smooth');
+    %CalcConvergence(@RunSimulationGLS, @InitialBoobyFunction, 'gls_smooth');
+    %CalcConvergence(@RunSimulationRV, @InitialBoobyFunction, 'rv_smooth');
     close all;
 end
 
@@ -114,7 +114,7 @@ function [U, M, p, t] = RunSimulationGLS(meshSize, InitialData)
 
     xi = CreateInitialData(p, InitialData);
 
-    delta = 0.03;
+    delta = 1;
     M = MassMatrixGFEM(p,t) + delta*MassMatrixLS(p,t);
     C = ConvectionMatrixGFEM(p,t) + delta*ConvectionMatrixLS(p,t);
 

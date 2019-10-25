@@ -21,7 +21,8 @@ q6 = CalculateConvergenceInterface(C1, C2, A, @MakeSBP6Operators, @MakeBoundarie
 
 % Plot results for SBP6
 deltaT = 0.1/gridDim;
-endT = .42; %ceil(1.75/deltaT)*deltaT;
+numIters = ceil(0.42/deltaT);
+endT = deltaT*numIters; %ceil(1.75/deltaT)*deltaT;
 x_l = -1;
 x_r = 1;
 x = linspace(x_l, x_r, gridDim)';
@@ -33,7 +34,7 @@ Tanalytic = abs(2*refractiveIndex1/(refractiveIndex1+refractiveIndex2))
 Ranalytic = abs((refractiveIndex1-refractiveIndex2)/(refractiveIndex1+refractiveIndex2))
 
 
-[vl, vr] = RunSimulationInterface(C1, C2, A, gridDim, deltaT, endT, x_l, x_r, @MakeSBP6Operators, @MakeBoundariesDBC);
+[vl, vr] = RunSimulationInterface(C1, C2, A, gridDim, deltaT, numIters, x_l, x_r, @MakeSBP6Operators, @MakeBoundariesDBC);
 gridDimL = length(vl)/2;
 gridDimR = length(vr)/2;
 v = [vl(1:gridDimL); vr(2:gridDimR); vl(gridDimL+1:end); vr(gridDimR+2:end)];

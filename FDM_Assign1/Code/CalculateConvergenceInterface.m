@@ -1,5 +1,5 @@
 function q = CalculateConvergenceInterface(C1, C2, A, MakeSBPOperators, MakeBoundaries)
-    gridDims = [201, 401];
+    gridDims = [101, 201];
     x_l = -1;
     x_r = 1;
     norms = [0, 0];
@@ -11,10 +11,11 @@ function q = CalculateConvergenceInterface(C1, C2, A, MakeSBPOperators, MakeBoun
         gridDim = gridDims(i);
         deltaX = 1.0/gridDim;
         deltaT = 0.1*deltaX;
-        endT = 0.42;
+        numIters = ceil(0.42/deltaT);
+        endT = deltaT*numIters;
         x = linspace(x_l, x_r, gridDim)';
         
-        [vl, vr] = RunSimulationInterface(C1, C2, A, gridDim, deltaT, endT, x_l, x_r, MakeSBPOperators, MakeBoundaries);
+        [vl, vr] = RunSimulationInterface(C1, C2, A, gridDim, deltaT, numIters, x_l, x_r, MakeSBPOperators, MakeBoundaries);
         gridDimL = length(vl)/2;
         gridDimR = length(vr)/2;
         v = [vl(1:gridDimL); vr(2:gridDimR); vl(gridDimL+1:end); vr(gridDimR+2:end)];
