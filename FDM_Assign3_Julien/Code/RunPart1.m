@@ -19,7 +19,7 @@ x = linspace(-1,1,gridDim)'
 
 
 
-v = RunSimulation3(gridDim, deltaT, numberOfIterations, @MakeSBP4Operators_Variable);
+v = RunSimulation3(gridDim, deltaT, numberOfIterations, @MakeSBP2Operators_Variable);
 
 v
 plot(v);

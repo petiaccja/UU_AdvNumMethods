@@ -1,4 +1,4 @@
-function [HI, D1, D2, DD_1, M] = MakeSBP2Operators_Variable(gridDim)
+function [HI, D1, D2, DD_1, M, MakeD2] = MakeSBP2Operators_Variable(gridDim)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% 2nbd order SBP Finite differens         %%%
@@ -70,6 +70,7 @@ M(m-1:m,m-1:m)=[c(m-2) / 0.2e1 + c(m-1) + c(m) / 0.2e1 -c(m-1) / 0.2e1 - c(m) / 
 M=M/h;
 
 D2=HI*(-M-diag(c)*e_1*d_1+diag(c)*e_m*d_m);
+MakeD2 = @(cvar) HI*(-M-diag(cvar)*e_1*d_1+diag(cvar)*e_m*d_m);
 
 %AD
 DD_1=(diag(ones(m-1,1),+1)-diag(ones(m,1),0));
