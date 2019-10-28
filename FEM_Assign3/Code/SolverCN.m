@@ -3,16 +3,15 @@ function U = SolverCN(massMatrix, p, t, xiInitial, timeStep, numIters)
     
     numNodes = length(xiInitial);
     U = zeros(numNodes, numIters+1);
-    U(:,1) = xi;    
+    U(:,1) = xi;
+    
+    M = massMatrix;
     
     for i=1:numIters
-        convectionMatrix = ConvectionMatrixGFEM(p,t,xi);
+        C = ConvectionMatrixGFEM(p,t,xi);
+        deltaXi = (M/timeStep - C/2)\b;
         
-        A = convectionMatrix/2 + massMatrix/timeStep;
-        B = massMatrix/timeStep - convectionMatrix/2;
-    
-        bb = B*xi;
-        xi_new = A\bb;
+        xi_new = xi + deltaXi;
         xi = xi_new;
         U(:,i+1)=xi;
     end

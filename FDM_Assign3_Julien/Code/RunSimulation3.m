@@ -1,9 +1,9 @@
-function v = RunSimulation3(gridDim, deltaT, numberOfIterations, MakeSBPOperators)
+function v = RunSimulation3(gridDim, deltaT, numberOfIterations, MakeSBPOperators, eps)
 
     %initialisation
     c = 2;
     a = 1;
-    eps = .00001;
+    
     
     %space
     h = 2/(gridDim-1);
@@ -11,7 +11,10 @@ function v = RunSimulation3(gridDim, deltaT, numberOfIterations, MakeSBPOperator
 
     %initial data
     v = AnalyticSolution(x,0,c,a,eps);
-    [HI, D1, D2, DD, M, MakeD2] = MakeSBPOperators(gridDim);
+    plot(v)
+    
+    %[HI, D1, D2, DD, M, MakeD2] = MakeSBPOperators(gridDim);
+    [HI, D1, D2, DD, M] = MakeSBPOperators(gridDim);
     Hinv = HI;
     
     gamma = 1;
@@ -19,15 +22,16 @@ function v = RunSimulation3(gridDim, deltaT, numberOfIterations, MakeSBPOperator
     
     
     %runge kutta step
-    vprevaaa = v;
+    %vprevaaa = v;
     for i=1:numberOfIterations
         %v = RungeKutta4Step(@(t,v) SAT_iterate(t,v,D1,D2,Hinv,eps), i*deltaT, v, deltaT);
-        %v = RungeKutta4Step(@(t,v) SAT_iterate_AD(t,v,D1,D2,DI,Hinv,eps), i*deltaT, v, deltaT);
-        Iterate = @(t,v,vprev) SAT_iterate_RV( t, v, vprev, D1, D2, MakeD2, Hinv, deltaT, h, eps);
-        v_new = RungeKutta4StepEx(Iterate, i*deltaT, v, vprevaaa, deltaT);
-        vprevaaa = v;
-        v = v_new;
-        figure(1);
+        v = RungeKutta4Step(@(t,v) SAT_iterate_AD(t,v,D1,D2,DI,Hinv,eps), i*deltaT, v, deltaT);
+        
+        %Iterate = @(t,v,vprev) SAT_iterate_RV( t, v, vprev, D1, D2, MakeD2, Hinv, deltaT, h, eps);
+        %v_new = RungeKutta4StepEx(Iterate, i*deltaT, v, vprevaaa, deltaT);
+        %vprevaaa = v;
+        %v = v_new;
+        %figure(1);
         plot(v)
         ylim([0,5])
         drawnow
@@ -35,4 +39,5 @@ function v = RunSimulation3(gridDim, deltaT, numberOfIterations, MakeSBPOperator
             break;
         end
     end
+    
 end

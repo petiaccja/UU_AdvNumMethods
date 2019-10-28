@@ -1,10 +1,12 @@
 close all;
 %ProblemOptimal();
 close all;
-Problem22();
+%Problem22();
 close all;
-%Problem23();
+Problem23();
 close all;
+
+%convergence for RV: smooth: 1.7237, discont.: 0.48594
 
 function MakeAnims(RunSimulationFunc, InitialFunc, simName)
     h = [1/8, 1/16];
@@ -33,6 +35,11 @@ function CalcConvergence(RunSimulationFunc, InitialFunc, simName)
         L2Errors(i) = sqrt(nodeError'*M*nodeError);
     end
     
+    % Calculate slope
+    coeffs = polyfit(log(h), log(L2Errors), 1);
+    alpha = coeffs(1);
+    disp(['Convergence rate = ', num2str(alpha)]);
+    
     % Plot h vs L2Error
     figure;
     subplot(1,2,1)
@@ -60,10 +67,10 @@ end
 function Problem22()
     MakeAnims(@RunSimulationGLS, @InitialBoobyFunction, 'gls_smooth');
     close all;
-    %MakeAnims(@RunSimulationRV, @InitialBoobyFunction, 'rv_smooth');
+    MakeAnims(@RunSimulationRV, @InitialBoobyFunction, 'rv_smooth');
     close all;
-    %CalcConvergence(@RunSimulationGLS, @InitialBoobyFunction, 'gls_smooth');
-    %CalcConvergence(@RunSimulationRV, @InitialBoobyFunction, 'rv_smooth');
+    CalcConvergence(@RunSimulationGLS, @InitialBoobyFunction, 'gls_smooth');
+    CalcConvergence(@RunSimulationRV, @InitialBoobyFunction, 'rv_smooth');
     close all;
 end
 

@@ -19,14 +19,15 @@ function convectionMatrix = ConvectionMatrixRV(p, t, u, r)
         convectionMatrix(nodeIndices,nodeIndices)=convectionMatrix(nodeIndices,nodeIndices)+subMatrix;
     end
     
-    figure(9);
-    pdesurf(p, t, ekv);
-    hold on;
-    line([0,1.5],[0,0],[0,0],'Color','red', 'LineWidth', 2);
-    line([0,0],[0,1.5],[0,0],'Color','green', 'LineWidth', 2);
-    line([0,0],[0,0],[0,1.5],'Color','blue', 'LineWidth', 2);
-    hold off;
-    title("Artificial viscosity coeff");
+%     figure(9);
+%     pdesurf(p, t, ekv);
+%     hold on;
+%     line([0,1.5],[0,0],[0,0],'Color','red', 'LineWidth', 2);
+%     line([0,0],[0,1.5],[0,0],'Color','green', 'LineWidth', 2);
+%     line([0,0],[0,0],[0,1.5],'Color','blue', 'LineWidth', 2);
+%     hold off;
+%     title('Artificial viscosity coeff');
+%     drawnow;
 end
 
 function hk = ElementMeshSize(x, y)
