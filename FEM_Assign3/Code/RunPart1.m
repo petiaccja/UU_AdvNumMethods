@@ -6,12 +6,15 @@ Problem11();
 close all;
 
 function Problem11()
-    h = [1/8, 1/16];
+    h = [1/8];%, 1/16];
 
     for i=1:length(h)
         [U, M, p, t] = RunSimulationGFEM(h(i), @InitialFunction);
         figure;
         pdesurf(p,t,U(:,size(U, 2)))
+        xlim([-4,2])
+        ylim([-4,2])
+        zlim([0,12])
         print(['../Plots/problem_1_1_result_', num2str(i)],'-djpeg')
 
         animFileName = ['../Plots/animation_smooth_h', num2str(i)];
@@ -103,19 +106,27 @@ function Problem13()
     print('../Plots/problem_1_3_errors','-djpeg')
 end
 
+function geom = rectangleg()
+    geom = [
+        2 2 2   -2.5 1.5  1 0; ...
+        2 2 -2  1.5 1.5   1 0; ...
+        2 -2 -2 1.5 -2.5  1 0; ...
+        2 -2 2  -2.5 -2.5 1 0]';
+end
 
 function [U, M, p, t] = RunSimulationGFEM(meshSize, InitialData)
     endTime = 1;
-    CFL = 0.5;
-    fPrimeMax = 2*pi*0.5; % ||2*pi*[-y, x]|| over a circle w/ r=0.5
-    timeStep = CFL*meshSize / fPrimeMax;
+    timeStep = 0.01;
     numIters = ceil(endTime/timeStep);
-    timeStep = endTime / numIters;
+    endTime = numIters*timeStep;
 
-    geometry = @circleg;
-    [p,e,t] = initmesh(geometry, 'hmax', meshSize);
+    geometry = @rectangleg;
+    [p,e,t] = initmesh(geometry(), 'hmax', meshSize);
 
     xi = CreateInitialData(p, InitialData);
+    figure(9);
+    pdesurf(p, t, xi);
+    title('Initial stuff')
 
     M = MassMatrixGFEM(p,t);
 

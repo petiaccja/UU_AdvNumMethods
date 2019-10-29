@@ -1,12 +1,13 @@
 close all;
 %ProblemOptimal();
 close all;
-%Problem22();
+Problem22();
 close all;
 Problem23();
 close all;
 
 %convergence for RV: smooth: 1.7237, discont.: 0.48594
+%convergence for GLS: smooth 1.6243, discont.: 0.32305
 
 function MakeAnims(RunSimulationFunc, InitialFunc, simName)
     h = [1/8, 1/16];
@@ -67,20 +68,20 @@ end
 function Problem22()
     MakeAnims(@RunSimulationGLS, @InitialBoobyFunction, 'gls_smooth');
     close all;
-    MakeAnims(@RunSimulationRV, @InitialBoobyFunction, 'rv_smooth');
+    %MakeAnims(@RunSimulationRV, @InitialBoobyFunction, 'rv_smooth');
     close all;
     CalcConvergence(@RunSimulationGLS, @InitialBoobyFunction, 'gls_smooth');
-    CalcConvergence(@RunSimulationRV, @InitialBoobyFunction, 'rv_smooth');
+    %CalcConvergence(@RunSimulationRV, @InitialBoobyFunction, 'rv_smooth');
     close all;
 end
 
 function Problem23()
     MakeAnims(@RunSimulationGLS, @InitialCylinderFunction, 'gls_shock');
     close all;
-    MakeAnims(@RunSimulationRV, @InitialCylinderFunction, 'rv_shock');
+    %MakeAnims(@RunSimulationRV, @InitialCylinderFunction, 'rv_shock');
     close all;
     CalcConvergence(@RunSimulationGLS, @InitialCylinderFunction, 'gls_shock');
-    CalcConvergence(@RunSimulationRV, @InitialCylinderFunction, 'rv_shock');
+    %CalcConvergence(@RunSimulationRV, @InitialCylinderFunction, 'rv_shock');
     close all;
 end
 
@@ -121,7 +122,7 @@ function [U, M, p, t] = RunSimulationGLS(meshSize, InitialData)
 
     xi = CreateInitialData(p, InitialData);
 
-    delta = 1;
+    delta = 1/2*meshSize/fPrimeMax;
     M = MassMatrixGFEM(p,t) + delta*MassMatrixLS(p,t);
     C = ConvectionMatrixGFEM(p,t) + delta*ConvectionMatrixLS(p,t);
 
