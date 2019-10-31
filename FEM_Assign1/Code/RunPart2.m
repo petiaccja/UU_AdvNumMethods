@@ -16,7 +16,7 @@ function MakeAnims(RunSimulationFunc, InitialFunc, simName)
         [U, M, p, t] = RunSimulationFunc(h(i), InitialFunc);
         figure;
         pdesurf(p,t,U(:,size(U, 2)))
-        zlim([-1, 1]);
+        zlim([-0.2, 1]);
         print(['../Plots/problem_2_result_', simName, '_', num2str(i)],'-djpeg')
 
         animFileName = ['../Plots/animation_', simName, '_h', num2str(i)];
